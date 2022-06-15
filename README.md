@@ -2,6 +2,12 @@
 
 Reads a data file then outputs a sample table to the terminal.
 
+## Supported formats
+
+* `.csv`
+* `.json`
+* `.ndjson` | `.nljson` | `.jsonl`
+
 ## Installation
 
 ```shell
