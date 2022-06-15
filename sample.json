@@ -1,4 +1,4 @@
 [
-  {"name":"bob","phone":"800.555.1111"},
-  {"name":"jess","phone":"505.555.2222"}
+  {"format":"json","name":"bob","phone":"800.555.1111"},
+  {"format":"json","name":"jess","phone":"505.555.2222"}
 ]

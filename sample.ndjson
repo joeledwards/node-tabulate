@@ -1,2 +1,2 @@
-{"name":"bob","phone":"800.555.1111"}
-{"name":"jess","phone":"505.555.2222"}
+{"format":"ndjson","name":"bob","phone":"800.555.1111"}
+{"format":"ndjson","name":"jess","phone":"505.555.2222"}
