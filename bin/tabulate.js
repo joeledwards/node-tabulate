@@ -36,7 +36,12 @@ app({
 })(async ({
   modules: { args }
 }) => {
-  await tabulate(args)
+  try {
+    await tabulate(args)
+  } catch (error) {
+    console.error(`${error}`)
+    process.exit(1)
+  }
 })
 
 // Parse a list of strings
