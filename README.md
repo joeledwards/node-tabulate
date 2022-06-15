@@ -1,17 +1,17 @@
-# tabule
+# tabulate
 
 Reads a data file then outputs a sample table to the terminal.
 
 ## Installation
 
 ```shell
-$ npm install tabule
+$ npm install @buzuli/tabulate
 ```
 
 ## Usage
 
 ```shell
-$ tabule my-file.csv
+$ tabulate my-file.csv
 ```
 
 ## Output
