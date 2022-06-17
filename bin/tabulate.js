@@ -14,14 +14,25 @@ app({
           yarg
             .option('fields', {
               coerce: parseList,
-              desc: 'maximum number of rows to output',
+              desc: 'the sequence of columns to included based on name',
               alias: 'f',
             })
             .option('indices', {
               coerce: parseNumbers,
-              desc: 'maximum number of rows to output',
+              desc: 'the sequence of columns to include based on index (zero-based)',
               alias: 'i',
               conflicts: ['fields'],
+            })
+            .option('field-filter', {
+              coerce: parseFilter(false),
+              desc: 'filter based on the values in a column identified by its name and a regex; form is <column-name>:<regex>',
+              alias: ['ff', 'F'],
+            })
+            .option('index-filter', {
+              coerce: parseFilter(true),
+              desc: 'filter based on the values in a column identified by its index (zero-based) and a regex; form is <column-index>:<regex>',
+              alias: ['if', 'I'],
+              conflicts: ['field-filter'],
             })
             .option('limit', {
               type: 'number',
@@ -79,4 +90,49 @@ function parseNumbers (list) {
   })
 
   return numbers
+}
+
+// Parse a filter
+function parseFilter (isIndexFilter) {
+  return text => {
+    if (typeof text != 'string') {
+      throw new Error('An argument is required')
+    }
+
+    const pivot = text.indexOf(':')
+
+    if (pivot < 1 || (pivot + 1) >= text.length) {
+      throw new Error('Filter format is invalid')
+    }
+
+    const colId = (() => {
+      const id = text.substr(0, pivot)
+
+      if (isIndexFilter) {
+        const index = Number(id)
+
+        if (isNaN(index)) {
+          throw new Error('Non-integer value supplied for index')
+        }
+
+        return index
+      } else {
+        return id
+      }
+    })()
+
+    const regex = (() => {
+      try {
+        const regexStr = text.substr(pivot + 1, text.length)
+        return new RegExp(regexStr)
+      } catch (error) {
+        throw new Error('Invalid filter regex')
+      }
+    })()
+
+    return {
+      colId,
+      regex,
+    }
+  }
 }
