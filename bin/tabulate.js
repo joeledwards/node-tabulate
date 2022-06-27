@@ -3,6 +3,7 @@
 const app = require('@buzuli/app')
 const yargs = require('yargs')
 const { tabulate } = require('../lib')
+const { parseFilter, parseList, parseNumbers } = require('../lib/util')
 
 app({
   modules: {
@@ -55,84 +56,3 @@ app({
   }
 })
 
-// Parse a list of strings
-function parseList (list) {
-  if (typeof list != 'string' && typeof list != 'number') {
-    throw new Error('An argument is required')
-  }
-
-  const parts = list.toString().split(',').map(str => {
-    if (str.trim() === '') {
-      throw new Error('List values may not be empty')
-    }
-
-    return str
-  })
-
-  if (parts.length < 1) {
-    throw new Error('At least 1 value required in list')
-  }
-
-  return parts
-}
-
-// Parse a list of numbers
-function parseNumbers (list) {
-  let hasNan = false
-  const numbers = parseList(list).map(str => {
-    const num = Number(str)
-
-    if (isNaN(num)) {
-      throw new Error('All values must be numbers')
-    }
-
-    return num
-  })
-
-  return numbers
-}
-
-// Parse a filter
-function parseFilter (isIndexFilter) {
-  return text => {
-    if (typeof text != 'string') {
-      throw new Error('An argument is required')
-    }
-
-    const pivot = text.indexOf(':')
-
-    if (pivot < 1 || (pivot + 1) >= text.length) {
-      throw new Error('Filter format is invalid')
-    }
-
-    const colId = (() => {
-      const id = text.substr(0, pivot)
-
-      if (isIndexFilter) {
-        const index = Number(id)
-
-        if (isNaN(index)) {
-          throw new Error('Non-integer value supplied for index')
-        }
-
-        return index
-      } else {
-        return id
-      }
-    })()
-
-    const regex = (() => {
-      try {
-        const regexStr = text.substr(pivot + 1, text.length)
-        return new RegExp(regexStr)
-      } catch (error) {
-        throw new Error('Invalid filter regex')
-      }
-    })()
-
-    return {
-      colId,
-      regex,
-    }
-  }
-}
